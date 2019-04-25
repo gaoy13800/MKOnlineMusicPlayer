@@ -39,6 +39,7 @@ define('CACHE_PATH', 'cache/');     // 文件缓存目录,请确保该目录存�
 if(!defined('DEBUG') || DEBUG !== true) error_reporting(0); // 屏蔽服务器错误
 
 require_once('plugns/Meting.php');
+require_once ('plugns/phpspider/download/otherSong.php');
 
 use Metowolf\Meting;
 
@@ -149,7 +150,16 @@ switch($types)   // 根据请求的 Api，执行相应操作
         
         echojson($data);
         break;
-        
+    case 'other'://全民K歌或唱吧歌曲下载
+        $s = getParam('name');
+
+        $otherDownload = new otherSong();
+
+        $data = $otherDownload->download($s, $source);
+
+        echo json_encode(['path' => $data]);exit;
+
+        break;
     default:
         echo '<!doctype html><html><head><meta charset="utf-8"><title>信息</title><style>* {font-family: microsoft yahei}</style></head><body> <h2>MKOnlinePlayer</h2><h3>Github: https://github.com/mengkunsoft/MKOnlineMusicPlayer</h3><br>';
         if(!defined('DEBUG') || DEBUG !== true) {   // 非调试模式

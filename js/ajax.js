@@ -92,6 +92,32 @@ function ajaxSearch() {
     });//ajax
 }
 
+function ajaxOtherDownload() {
+
+    if(rem.wd === ""){
+        layer.msg('搜索内容不能为空', {anim:6});
+        return false;
+    }
+
+    $.ajax({
+        type: mkPlayer.method,
+        url: mkPlayer.api,
+        data: "types=other&source=" + rem.source + "&name=" + rem.wd,
+        dataType : "json",
+        success: function(jsonData){
+            if (jsonData.path == undefined){
+                layer.msg('搜索结果获取失败,请联系管理员下载');
+                return;
+            }
+            window.location.href = jsonData.path;
+        },   //success
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            layer.msg('搜索结果获取失败 - ' + XMLHttpRequest.status);
+            console.error(XMLHttpRequest + textStatus + errorThrown);
+        }   // error
+    });//ajax
+}
+
 // 完善获取音乐信息
 // 音乐所在列表ID、音乐对应ID、回调函数
 function ajaxUrl(music, callback)

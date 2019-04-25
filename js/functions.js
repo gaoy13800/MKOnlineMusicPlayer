@@ -71,6 +71,12 @@ $(function(){
             
             case "sheet":   // 播放列表
                 dataBox("sheet");    // 在主界面显示出音乐专辑
+            case "other": //全民K歌下载页面
+                otherDownload();
+                break;
+            case "songbar":
+                otherDownload();
+                break;
             break;
         }
     });
@@ -346,6 +352,34 @@ function searchBox() {
     $("#music-source input[name='source'][value='" + rem.source + "']").prop("checked", "checked");
 }
 
+function otherDownload() {
+    //全民k歌与唱吧音乐下载
+    var tmpHtml = '<form onSubmit="return sendOtherDownload()"><div id="search-area">' +
+        '    <div class="search-group">' +
+        '        <input type="text" name="wd" id="search-wd" placeholder="请填写要下载歌曲的分享链接" autofocus required>' +
+        '        <button class="search-submit" type="submit">搜 索</button>' +
+        '    </div>' +
+        '    <div class="radio-group" id="music-source-other">' +
+        '       <label><input type="radio" name="source" value="songbar" checked=""> 唱吧</label>' +
+        '       <label><input type="radio" name="source" value="ksong"> 全民k歌</label>' +
+        '   </div>' +
+        '</div></form>';
+    layer.open({
+        type: 1,
+        shade: false,
+        title: false, // 不显示标题
+        shade: 0.5,    // 遮罩颜色深度
+        shadeClose: true,
+        content: tmpHtml,
+        cancel: function(){
+        }
+    });
+
+    // 恢复上一次的输入
+    $("#search-wd").focus().val(rem.wd);
+    $("#music-source input[name='source'][value='" + rem.source + "']").prop("checked", "checked");
+}
+
 // 搜索提交
 function searchSubmit() {
     var wd = $("#search-wd").val();
@@ -355,12 +389,30 @@ function searchSubmit() {
         return false;
     }
     rem.source = $("#music-source input[name='source']:checked").val();
-    
+
     layer.closeAll('page');     // 关闭搜索框
-    
+
     rem.loadPage = 1;   // 已加载页数复位
     rem.wd = wd;    // 搜索词
     ajaxSearch();   // 加载搜索结果
+    return false;
+}
+
+
+function sendOtherDownload() {
+    var wd = $("#search-wd").val();
+    if(!wd) {
+        layer.msg('内容不能为空', {anim:6, offset: 't'});
+        $("#search-wd").focus();
+        return false;
+    }
+    rem.source = $("#music-source-other input[name='source']:checked").val();
+
+    layer.closeAll('page');     // 关闭搜索框
+
+    rem.loadPage = 1;   // 已加载页数复位
+    rem.wd = wd;    // 搜索词
+    ajaxOtherDownload();   // 加载搜索结果
     return false;
 }
 
