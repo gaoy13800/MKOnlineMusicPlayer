@@ -5,8 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     <meta name="renderer" content="webkit">
-    <meta name="author" content="mengkun">
-    <meta name="generator" content="KodCloud">
+    <meta name="author" content="OSir™; QQ:1113045679">
     <meta http-equiv="Cache-Control" content="no-siteapp">
     
     <!-- 强制移动设备以app模式打开页面(即在移动设备下全屏，仅支持部分浏览器) -->
@@ -18,10 +17,10 @@
     <meta name="x5-fullscreen" content="true"><!--QQ强制全屏-->
     <meta name="x5-page-mode" content="app"><!--QQ应用模式-->
     
-    <title>MKOnlinePlayer v2.4</title>
-    <meta name="description" content="一款开源的基于网易云音乐api的在线音乐播放器。具有音乐搜索、播放、下载、歌词同步显示、个人音乐播放列表同步等功能。"/>
-    <meta name="keywords" content="在线音乐播放器,MKOnlinePlayer,网易云音乐,音乐api,音乐播放器源代码"/>
-    
+    <title>OSir的音乐栖息地</title>
+    <meta name="description" content="免费音乐在线听。"/>
+    <meta name="keywords" content="在线音乐播放器,酷狗音乐,QQ音乐无限听,唱吧歌曲解析,网易云音乐,音乐api,音乐播放器,全民K歌音乐解析"/>
+
     <!-- 不支持IE8及以下版本浏览器 -->
     <!--[if lte IE 8]>
         <script>window.location.href="plugns/killie/"</script>
@@ -44,6 +43,12 @@
     
     <!-- layer弹窗插件样式文件 -->
     <link rel="stylesheet" href="plugns/layer/skin/default/layer.css?v=3.0.2302" id="layuicss-skinlayercss">
+
+    <script>
+        layer.config({
+            skin: 'demo-class'
+        })
+    </script>
 </head>
 <body>
 
@@ -51,8 +56,8 @@
 
 <!-- 头部logo -->
 <div class="header">
-    <div class="logo" title="Version 2.4; Based on Meting; Powered by Mengkun">
-        ♫ 甘子墨全网付费音乐下载 Music Downloader
+    <div class="logo" title="Music By Internet; Author OSir™">
+        <a href="http://me.openows.com" style="color: #f1f1f1" target="_blank">♫ OSir 音乐小院</a>
     </div>
 </div>  <!--class="header"-->
 
@@ -66,7 +71,8 @@
                 <span class="btn" data-action="playing" title="正在播放列表">正在播放</span>
                 <span class="btn" data-action="sheet" title="音乐播放列表">播放列表</span>
                 <span class="btn" data-action="search" title="点击搜索音乐">歌曲搜索</span>
-                <span class="btn" data-action="other" title="全民K歌或唱吧音乐下载">全民K歌 - 唱吧</span>
+                <span class="btn" data-action="k_song" title="全民K歌">全民K歌</span>
+                <span class="btn" data-action="bar_song" title="唱吧">唱吧</span>
             </div>
         </div>  <!--class="btn-bar"-->
         
@@ -97,10 +103,10 @@
 <div class="footer">
     <div class="container">
         <div class="con-btn">
+            <a href="javascript:;" class="player-btn btn-order" title="循环控制"></a>
             <a href="javascript:;" class="player-btn btn-prev" title="上一首"></a>
             <a href="javascript:;" class="player-btn btn-play" title="暂停/继续"></a>
             <a href="javascript:;" class="player-btn btn-next" title="下一首"></a>
-			<a href="javascript:;" class="player-btn btn-order" title="循环控制"></a>
         </div>  <!--class="con-btn"-->
         
         <div class="vol">

@@ -54,9 +54,11 @@ $(function(){
     
     addListhead();  // 列表头
     addListbar("loading");  // 列表加载中
-    
+
+
     // 顶部按钮点击处理
     $(".btn").click(function(){
+        console.log($(this).data("action"));
         switch($(this).data("action")) {
             case "player":    // 播放器
                 dataBox("player");
@@ -68,14 +70,13 @@ $(function(){
             case "playing": // 正在播放
                 loadList(1); // 显示正在播放列表
             break;
-            
             case "sheet":   // 播放列表
                 dataBox("sheet");    // 在主界面显示出音乐专辑
-            case "other": //全民K歌下载页面
-                otherDownload();
+            case "bar_song": //全民K歌下载页面
+                otherDownload('bar');
                 break;
-            case "songbar":
-                otherDownload();
+            case "k_song":
+                otherDownload('k');
                 break;
             break;
         }
@@ -263,7 +264,7 @@ $(function(){
             // 背景图片初始化
             $('#blur-img').backgroundBlur({
                 // imageURL : '', // URL to the image that will be used for blurring
-                blurAmount : 50, // 模糊度
+                blurAmount : 20, // 模糊度
                 imageClass : 'blured-img', // 背景区应用样式
                 overlayClass : 'blur-mask', // 覆盖背景区class，可用于遮罩或额外的效果
                 // duration: 0, // 图片淡出时间
@@ -352,28 +353,38 @@ function searchBox() {
     $("#music-source input[name='source'][value='" + rem.source + "']").prop("checked", "checked");
 }
 
-function otherDownload() {
+function otherDownload(type) {
     //全民k歌与唱吧音乐下载
-    var tmpHtml = '<form onSubmit="return sendOtherDownload()"><div id="search-area">' +
+
+    var tmpHtml = '<form onSubmit="return sendKSongDownload()" ><div id="search-area">';
+
+    if (type == 'bar'){
+        tmpHtml = '<form onSubmit="return sendBarDownload()" ><div id="search-area">';
+    }
+
+     tmpHtml = tmpHtml +
         '    <div class="search-group">' +
-        '        <input type="text" name="wd" id="search-wd" placeholder="请填写要下载歌曲的分享链接" autofocus required>' +
+        '        <input type="text" name="wd" id="search-wd" placeholder="链接" autofocus required>' +
         '        <button class="search-submit" type="submit">搜 索</button>' +
         '    </div>' +
         '    <div class="radio-group" id="music-source-other">' +
-        '       <label><input type="radio" name="source" value="songbar" checked=""> 唱吧</label>' +
-        '       <label><input type="radio" name="source" value="ksong"> 全民k歌</label>' +
+        '       <label><input type="radio" name="source" value="song" checked=""> 歌曲</label>' +
+        '       <label><input type="radio" name="source" value="mv"> mv</label>' +
         '   </div>' +
         '</div></form>';
     layer.open({
         type: 1,
-        shade: false,
+        // shade: false,
         title: false, // 不显示标题
         shade: 0.5,    // 遮罩颜色深度
         shadeClose: true,
         content: tmpHtml,
+        width:30,
+        skin:'demo-class',
         cancel: function(){
         }
     });
+
 
     // 恢复上一次的输入
     $("#search-wd").focus().val(rem.wd);
@@ -399,7 +410,12 @@ function searchSubmit() {
 }
 
 
-function sendOtherDownload() {
+function sendBarDownload(type) {
+
+    musicList[0].item = [];
+
+    rem.mainList.html('');   // 清空列表中原有的元素
+
     var wd = $("#search-wd").val();
     if(!wd) {
         layer.msg('内容不能为空', {anim:6, offset: 't'});
@@ -412,8 +428,35 @@ function sendOtherDownload() {
 
     rem.loadPage = 1;   // 已加载页数复位
     rem.wd = wd;    // 搜索词
+    rem.s_type = 'bar';
     ajaxOtherDownload();   // 加载搜索结果
     return false;
+}
+
+function sendKSongDownload() {
+
+    musicList[0].item = [];
+
+    rem.mainList.html('');   // 清空列表中原有的元素
+
+    var wd = $("#search-wd").val();
+
+    if(!wd) {
+        layer.msg('内容不能为空', {anim:6, offset: 't'});
+        $("#search-wd").focus();
+        return false;
+    }
+    rem.source = $("#music-source-other input[name='source']:checked").val();
+
+    layer.closeAll('page');     // 关闭搜索框
+
+    rem.loadPage = 1;   // 已加载页数复位
+    rem.wd = wd;    // 搜索词
+    rem.s_type = 'k';
+
+    ajaxOtherDownload();   // 加载搜索结果
+    return false;
+
 }
 
 // 下载正在播放的这首歌
@@ -505,7 +548,7 @@ function changeCover(music) {
             $("#music-cover").load(function(){
                 if(animate) {   // 渐变动画也已完成
                     $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
-                    $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
+                    $("#blur-img").animate({opacity:"0.5"}, 2000); // 背景更换特效
                 } else {
                     imgload = true;     // 告诉下面的函数，图片已准备好
                 }
@@ -516,7 +559,7 @@ function changeCover(music) {
             $("#blur-img").animate({opacity: "0.2"}, 1000, function(){
                 if(imgload) {   // 如果图片已经加载好了
                     $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
-                    $("#blur-img").animate({opacity:"1"}, 2000); // 背景更换特效
+                    $("#blur-img").animate({opacity:"2.5"}, 2000); // 背景更换特效
                 } else {
                     animate = true;     // 等待图像加载完
                 }
@@ -621,6 +664,8 @@ function addItem(no, name, auth, album) {
     '    <span class="music-name">' + name + '</span>' +
     '</div>'; 
     rem.mainList.append(html);
+
+    console.log(rem.mainList)
 }
 
 // 加载列表中的提示条

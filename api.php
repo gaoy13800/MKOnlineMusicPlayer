@@ -25,6 +25,7 @@ $netease_cookie = '';
 define('HTTPS', false);    // 如果您的网站启用了https，请将此项置为“true”，如果你的网站未启用 https，建议将此项设置为“false”
 define('DEBUG', false);      // 是否开启调试模式，正常使用时请将此项置为“false”
 define('CACHE_PATH', 'cache/');     // 文件缓存目录,请确保该目录存在且有读写权限。如无需缓存，可将此行注释掉
+define('PLUGNS_PATH','plugns/');
 
 /*
  如果遇到程序不能正常运行，请开启调试模式，然后访问 http://你的网站/音乐播放器地址/api.php ，进入服务器运行环境检测。
@@ -39,6 +40,7 @@ define('CACHE_PATH', 'cache/');     // 文件缓存目录,请确保该目录存�
 if(!defined('DEBUG') || DEBUG !== true) error_reporting(0); // 屏蔽服务器错误
 
 require_once('plugns/Meting.php');
+require_once ('helper/tools.php');
 require_once ('plugns/phpspider/download/otherSong.php');
 
 use Metowolf\Meting;
@@ -64,7 +66,6 @@ switch($types)   // 根据请求的 Api，执行相应操作
         $id = getParam('id');  // 歌曲ID
         
         $data = $API->url($id);
-        
         echojson($data);
         break;
         
@@ -152,12 +153,13 @@ switch($types)   // 根据请求的 Api，执行相应操作
         break;
     case 'other'://全民K歌或唱吧歌曲下载
         $s = getParam('name');
+        $s_source = getParam('s_type');
 
         $otherDownload = new otherSong();
 
-        $data = $otherDownload->download($s, $source);
+        $data = $otherDownload->download($s, $source, $s_source);
 
-        echo json_encode(['path' => $data]);exit;
+        echojson(json_encode($data));
 
         break;
     default:

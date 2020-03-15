@@ -99,17 +99,77 @@ function ajaxOtherDownload() {
         return false;
     }
 
+    console.log("types=other&s_type="+ rem.s_type +"&source=" + rem.source + "&name=" + rem.wd);
+
     $.ajax({
         type: mkPlayer.method,
         url: mkPlayer.api,
-        data: "types=other&source=" + rem.source + "&name=" + rem.wd,
+        data: {
+            'types':'other',
+            's_type':rem.s_type,
+            'source':rem.source,
+            'name':rem.wd
+        },
         dataType : "json",
         success: function(jsonData){
-            if (jsonData.path == undefined){
+
+            if (jsonData == undefined){
                 layer.msg('搜索结果获取失败,请联系管理员下载');
-                return;
+                return false
             }
-            window.location.href = jsonData.path;
+
+            musicList[0].item = [];
+
+            rem.mainList.html('');   // 清空列表中原有的元素
+            addListhead();      // 加载列表头
+
+            var tempItem = {};
+
+            if (s_type == 'k'){
+                tempItem =  {
+                    id: 99999999999998,  // 音乐ID
+                    name: jsonData.name,  // 音乐名字
+                    artist: jsonData.artist, // 艺术家名字
+                    album: jsonData.album,    // 专辑名字
+                    source: '全民k歌',     // 音乐来源
+                    url_id: '1',  // 链接ID
+                    pic_id: '1',  // 封面ID
+                    lyric_id: '',  // 歌词ID
+                    pic: "https://dss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2947404683,2063657527&fm=179&app=42&f=PNG?w=56&h=56",    // 专辑图片
+                    url: jsonData.url   // mp3链接
+                };
+            } else {
+                tempItem =  {
+                    id: 99999999999998,  // 音乐ID
+                    name: jsonData.name,  // 音乐名字
+                    artist: jsonData.artist, // 艺术家名字
+                    album: jsonData.album,    // 专辑名字
+                    source: '唱吧',     // 音乐来源
+                    url_id: '1',  // 链接ID
+                    pic_id: '1',  // 封面ID
+                    lyric_id: '',  // 歌词ID
+                    pic: "https://dss0.bdstatic.com/6Ox1bjeh1BF3odCf/it/u=3521392132,768524222&fm=74&app=80&f=PNG&size=f121,121?sec=1880279984&t=80aa4f3ed335b04bed6d06aed3c712cb",    // 专辑图片
+                    url: jsonData.url   // mp3链接
+                };
+            }
+
+
+            musicList[0].item.push(tempItem);   // 保存到搜索结果临时列表中
+            addItem(1, tempItem.name, tempItem.artist, tempItem.album);  // 在前端显示
+
+            rem.dislist = 0;    // 当前显示的是搜索列表
+            rem.loadPage  = 1;    // 已加载的列数+1
+
+            dataBox("list");    // 在主界面显示出播放列表
+            refreshList();  // 刷新列表，添加正在播放样式
+
+            addListbar("nomore");
+
+            // if (jsonData.path == undefined){
+            //     layer.msg('搜索结果获取失败,请联系管理员下载');
+            //     return;
+            // }
+            // window.location.href = jsonData.path;
         },   //success
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             layer.msg('搜索结果获取失败 - ' + XMLHttpRequest.status);

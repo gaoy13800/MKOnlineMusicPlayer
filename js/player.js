@@ -10,22 +10,20 @@ var mkPlayer = {
     loadcount: 20,  // 搜索结果一次加载多少条
     method: "POST",     // 数据传输方式(POST/GET)
     defaultlist: 3,    // 默认要显示的播放列表编号
-    autoplay: false,    // 是否自动播放(true/false) *此选项在移动端可能无效
+    autoplay: true,    // 是否自动播放(true/false) *此选项在移动端可能无效
     coverbg: true,      // 是否开启封面背景(true/false) *开启后会有些卡
     mcoverbg: true,     // 是否开启[移动端]封面背景(true/false)
     dotshine: true,    // 是否开启播放进度条的小点闪动效果[不支持IE](true/false) *开启后会有些卡
-    mdotshine: false,   // 是否开启[移动端]播放进度条的小点闪动效果[不支持IE](true/false)
+    mdotshine: true,   // 是否开启[移动端]播放进度条的小点闪动效果[不支持IE](true/false)
     volume: 0.6,        // 默认音量值(0~1之间)
-    version: "v2.41",    // 播放器当前版本号(仅供调试)
-    debug: false   // 是否开启调试模式(true/false)
+    version: "v1.0",    // 播放器当前版本号(仅供调试)
+    debug: true   // 是否开启调试模式(true/false)
 };
 
 
 
 /*******************************************************
  * 以下内容是播放器核心文件，不建议进行修改，否则可能导致播放器无法正常使用!
- * 
- * 哈哈，吓唬你的！想改就改呗！不过建议修改之前先【备份】,要不然改坏了弄不好了。
  ******************************************************/
 
 // 存储全局变量
@@ -210,13 +208,14 @@ function listClick(no) {
         
         
         // 查找当前的播放列表中是否已经存在这首歌
-        for(var i=0; i<musicList[1].item.length; i++) {
-            if(musicList[1].item[i].id == tmpMusic.id && musicList[1].item[i].source == tmpMusic.source) {
-                tmpid = i;
-                playList(tmpid);    // 找到了直接播放
-                return true;    // 退出函数
-            }
-        }
+        // for(var i=0; i<musicList[1].item.length; i++) {
+        //     if(musicList[1].item[i].id == tmpMusic.id && musicList[1].item[i].source == tmpMusic.source) {
+        //         tmpid = i;
+        //         console.log(tmpid)
+        //         playList(tmpid);    // 找到了直接播放
+        //         return true;    // 退出函数
+        //     }
+        // }
         
         
         // 将点击的这项追加到正在播放的条目的下方
@@ -323,8 +322,11 @@ function play(music) {
     try {
         rem.audio[0].pause();
         rem.audio.attr('src', music.url);
+        console.log(rem.audio)
+        // nextMusic()
         rem.audio[0].play();
     } catch(e) {
+        nextMusic()
         audioErr(); // 调用错误处理函数
         return;
     }
@@ -335,11 +337,6 @@ function play(music) {
     ajaxLyric(music, lyricCallback);     // ajax加载歌词
     music_bar.lock(false);  // 取消进度条锁定
 }
-
-
-// 我的要求并不高，保留这一句版权信息可好？
-// 保留了，你不会损失什么；而保留版权，是对作者最大的尊重。
-console.info('欢迎使用 MKOnlinePlayer!\n当前版本：'+mkPlayer.version+' \n作者：mengkun(https://mkblog.cn)\n歌曲来源于各大音乐平台\nGithub：https://github.com/mengkunsoft/MKOnlineMusicPlayer');
 
 // 音乐进度条拖动回调函数
 function mBcallback(newVal) {
